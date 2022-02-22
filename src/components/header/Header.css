@@ -1,0 +1,24 @@
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.leave-link {
+  text-decoration: none;
+  border: 1px solid black;
+  border-radius: 8px;
+  cursor: pointer;
+  padding: 5px 8px;  
+  transition: 0.3s ease;
+}
+
+.leave-link:hover {
+  background-color: red;
+  color: #fff;
+}
+
+.header-headig {
+  margin-left: -5px;
+}

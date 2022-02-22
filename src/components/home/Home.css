@@ -1,0 +1,82 @@
+.container {
+  margin-top: 50px;
+  border: 2px solid rgb(196, 173, 218);
+  border-radius: 10px;
+}
+
+.home-box {
+  display: flex;
+}
+
+.chat-content {
+  width: 100%;
+  border: 2px solid rgb(196, 173, 218);
+  border-left: none;
+  padding: 5px 20px;
+  margin-right: -22px;
+}
+
+
+.chat-area {
+  height: 420px;
+  width: 100%;
+  overflow-y: scroll;
+  margin-bottom: 13px;
+}
+
+.chat-area::-webkit-scrollbar{
+  display: none;
+}
+
+.message-user {
+  width: 60%;
+  border-radius: 8px;
+  padding: 2px 7px;
+  font-size: 14px;
+  background-color: rgb(216, 195, 236);
+  margin-left: auto;
+}
+
+.message-friend {
+  width: 60%;
+  border-radius: 8px;
+  padding: 2px 7px;
+  font-size: 14px;
+  background-color: rgb(189, 157, 219);
+  margin-right: auto;
+}
+
+.date {
+  font-size: 10px;
+  font-weight: 700;
+  display:block;
+}
+
+.message-form {
+  width: 100%;
+}
+
+.text-input {
+  border: none;
+  outline: none;
+  width: 80%;
+  padding: 7px 12px;
+  border-radius: 3px;
+  font-size: 14px;
+}
+.input-file {
+  border: 1px solid rgb(80, 79, 79);
+  border-radius: 2px;
+  padding: 5px 10px;
+  margin: 0 5px;
+  cursor: pointer;
+}
+
+#file-input {
+  display: none;
+}
+
+.send-button {
+  cursor: pointer;
+  padding: 4px 8px;
+}
