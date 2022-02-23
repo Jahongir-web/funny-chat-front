@@ -2,7 +2,12 @@ import { useEffect, createContext, useState, useContext, FC } from "react";
 import axios from "axios";
 import {IProps, IUser, IMessage } from "./interfacesContext";
 
+import {io} from "socket.io-client";
+
+
 export interface IContext {
+  socket: any;
+
   update: boolean;
   setUpdate: (update: boolean) => void;
 
@@ -52,9 +57,10 @@ export const InfoProvider: FC<IProps> = ({ children }: any) => {
     
     const [url, setUrl] = useState<string>("http://localhost:4001/api");
 
-    // const socket = IO(`${url}/main`)
-    
+    const socket = io(`http://localhost:4001/`, { transports: ['websocket'], withCredentials: true, })
+   
     const value = {
+    socket,
     update, 
     setUpdate,
     url,
@@ -75,15 +81,17 @@ export const InfoProvider: FC<IProps> = ({ children }: any) => {
 
   useEffect(() => {
     const getUser = async () => {
-      try {        
-        const res = await axios.get(`${url}/`, {
-          headers: { authorization: `Bearer ${token}` },
-        });
-        setUser(res.data.user);
-      } catch (err) {
-        setUser(null);
-        console.log(err);
-      } 
+      if(token !== ""){
+        try {        
+          const res = await axios.get(`${url}/`, {
+            headers: { authorization: `Bearer ${token}` },
+          });
+          setUser(res.data.user);
+        } catch (err) {
+          setUser(null);
+          console.log(err);
+        } 
+      }
     };
     getUser();
     // eslint-disable-next-line react-hooks/exhaustive-deps

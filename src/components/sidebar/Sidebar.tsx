@@ -2,15 +2,24 @@
 import axios from 'axios';
 import { useState } from 'react';
 import { useInfoContext } from '../../Context/getContext'
+import { IUser } from '../../Context/interfacesContext';
 
 import './Sidebar.css'
 
 
 const Sidebar = () => {
 
-  const { user, users, usersMessage, activeId, setActiveId, token, url, update, setUpdate } = useInfoContext();
+  const { socket, user, users,  usersMessage, activeId, setActiveId, token, url, update, setUpdate } = useInfoContext();
 
   const [data, setData] = useState(usersMessage)
+
+  if(user){
+    socket.on('update users', (users: IUser[]) => {
+      setData(users)
+    })
+
+  }
+
 
   const readMessage = async (author_id: string) => {
     try {  

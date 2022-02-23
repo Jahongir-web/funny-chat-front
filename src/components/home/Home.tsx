@@ -14,13 +14,22 @@ import { toast } from 'react-toastify';
 
 const Home = () => {
   
-  const { user, token, url, messages, setMessages, activeId, update, setUpdate} = useInfoContext();  
-  
+  const {socket, user, token, url, messages, setMessages, activeId, update, setUpdate} = useInfoContext();  
+
   const history = useHistory()
   if(user===null && token===''){
     history.push('/login')
   }
-   
+  
+  useEffect(()=>{  
+    if(user){
+      socket.emit('online', user)
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user])
+
+  
   const [message, setMessage] = useState({
     message_text: '',
     message_file: null, 
