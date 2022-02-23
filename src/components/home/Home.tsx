@@ -14,7 +14,11 @@ import { toast } from 'react-toastify';
 
 const Home = () => {
   
-  const {socket, user, token, url, messages, setMessages, activeId, update, setUpdate} = useInfoContext();  
+  const {socket, user, token, url, messages, setMessages, activeId} = useInfoContext();  
+
+  // const fileRef = useRef()
+
+  // const textRef = useRef()
 
   const history = useHistory()
   if(user===null && token===''){
@@ -41,14 +45,11 @@ const Home = () => {
     saveAs(urll, `${urll}`) 
   }
 
-  const createMessage = async (e: React.FormEvent<HTMLFormElement>)=>{
+  const sendMessage = async (e: React.FormEvent<HTMLFormElement>)=>{
     e.preventDefault()
     try {
-      toast.loading('please wait')
       await axios.post(`${url}/message`, message, {headers: { authorization: `BarerToken ${token}` }})
-      toast.dismiss()
-      toast.success("Xabar jo'natildi!")
-      setUpdate(!update)
+      socket.emit('sendMessage', 'message junatildi')
       setMessage({...message, message_text: '', message_file: null,})
     } catch (error: any) {
       toast.dismiss()
@@ -73,8 +74,12 @@ const Home = () => {
 
     getMessages();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user, update]);
+  }, [user]);
 
+  
+  socket.on('new message', (new_messages: any) => {
+    setMessages(new_messages)
+  })
   
   
   
@@ -99,7 +104,7 @@ const Home = () => {
             
           </div>
 
-          <form className='message-form' onSubmit={createMessage}>
+          <form className='message-form' onSubmit={sendMessage}>
             <input className='text-input' type="text" name="message" onChange={(e)=> {
               setMessage({...message, message_text: e.target.value, author_id: user?.user_id, user_id: activeId})
             }}/>
