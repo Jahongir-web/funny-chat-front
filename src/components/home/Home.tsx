@@ -14,7 +14,7 @@ import { toast } from 'react-toastify';
 
 const Home = () => {
   
-  const {socket, user, token, url, messages, setMessages, activeId} = useInfoContext();  
+  const {socket, user, token, url, messages, setMessages, activeId, update, setUpdate} = useInfoContext();  
 
   // const fileRef = useRef()
 
@@ -51,6 +51,7 @@ const Home = () => {
       await axios.post(`${url}/message`, message, {headers: { authorization: `BarerToken ${token}` }})
       socket.emit('sendMessage', 'message junatildi')
       setMessage({...message, message_text: '', message_file: null,})
+      setUpdate(!update)
     } catch (error: any) {
       toast.dismiss()
       toast.error('Xatolik yuz berdi!')  
@@ -76,10 +77,14 @@ const Home = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
-  
-  socket.on('new message', (new_messages: any) => {
-    setMessages(new_messages)
-  })
+  useEffect(()=> {
+    socket.on('new message', (new_messages: any) => {
+      console.log('new message 1');
+      
+      setMessages(new_messages)
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [update])
   
   
   
