@@ -143,7 +143,7 @@ const Home = () => {
               }
             }}/>
             <label className='input-file' htmlFor="file-input">💽 file</label>
-            <button disabled={activeId === '0' || message.message_text === ''} className='send-button' type='submit'>✈Send</button>
+            <button disabled={(activeId === '0' || message.message_text === '') && message.message_file === null} className='send-button' type='submit'>✈Send</button>
           </form>
 
         </div>
