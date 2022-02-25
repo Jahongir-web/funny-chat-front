@@ -7,18 +7,13 @@ import Sidebar from '../sidebar/Sidebar';
 import { saveAs }  from 'file-saver'
 
 import './Home.css'
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { toast } from 'react-toastify';
-
-
+import { format } from "timeago.js";
 
 const Home = () => {
   
   const {socket, user, token, url, messages, setMessages, activeId, update, setUpdate} = useInfoContext();  
-
-  // const fileRef = useRef()
-
-  // const textRef = useRef()
 
   const history = useHistory()
   if(user===null && token===''){
@@ -29,7 +24,6 @@ const Home = () => {
     if(user){
       socket.emit('online', user)
     }
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user])
 
@@ -75,17 +69,25 @@ const Home = () => {
 
     getMessages();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user]);
+  }, [update]);
 
   useEffect(()=> {
-    socket.on('new message', (new_messages: any) => {
-      console.log('new message 1');
-      
+    socket.on('new message', (new_messages: any) => {      
       setMessages(new_messages)
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [update])
+  }, [])
   
+
+  const messagesEndRef = useRef<null | HTMLDivElement>(null)
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ block: 'end', behavior: 'smooth' })
+  }
+
+  useEffect(() => {
+    scrollToBottom()
+  }, [messages]);
   
   
   return (
@@ -96,21 +98,21 @@ const Home = () => {
         <div className='chat-content'>
           <div className="chat-area">
             {
-              messages.map((item, index) => {
-                if((`${item.author_id}` === activeId || `${item.user_id}` === user?.user_id) || (`${item.author_id}` === user?.user_id || `${item.user_id}` === activeId)){
+              messages.map((item: any, index) => {
+                if((`${item.author_id}` === `${activeId}` && `${item.user_id}` === `${user?.user_id}`) || (`${item.author_id}` === `${user?.user_id}` && `${item.user_id}` === `${activeId}`)){
                   return(
                     <p className={` ${`${item.author_id}` === `${user?.user_id}` ? 'message-user' : 'message-friend'}`} key={index}>{item.message_text} {item.message_file && <button type="button" onClick={() => downloadFile(item.message_file)}
-                    ><img src="https://freeiconshop.com/wp-content/uploads/edd/document-download-flat.png" width={30} alt="file" /></button> }<span className='date'>{item.date}</span></p>
+                    ><img src="https://freeiconshop.com/wp-content/uploads/edd/document-download-flat.png" width={30} alt="file" /></button> }<span className='date'>{format(item.created_at)}</span></p>
                   )
                 }
                 return(<i key={index}></i>)
               })
             }
-            
+            <div ref={messagesEndRef}></div>
           </div>
 
           <form className='message-form' onSubmit={sendMessage}>
-            <input className='text-input' type="text" name="message" onChange={(e)=> {
+            <input value={message.message_text} className='text-input' type="text" name="message" autoComplete='off' onChange={(e)=> {
               setMessage({...message, message_text: e.target.value, author_id: user?.user_id, user_id: activeId})
             }}/>
             <input type="file" name="file" id="file-input" onChange={async (e: any) => {
@@ -141,7 +143,7 @@ const Home = () => {
               }
             }}/>
             <label className='input-file' htmlFor="file-input">💽 file</label>
-            <button className='send-button' type='submit'>✈Send</button>
+            <button disabled={activeId === '0' || message.message_text === ''} className='send-button' type='submit'>✈Send</button>
           </form>
 
         </div>

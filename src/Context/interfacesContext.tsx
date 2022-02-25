@@ -11,12 +11,12 @@ export interface IUser {
 }
 
 export interface IMessage {
-  message_id: number;
-  message_text: string;
-  message_file: string;
-  author_id: number;
-  user_id: number;
-  date: string;
+  message_id?: number;
+  message_text?: string;
+  message_file?: string;
+  author_id?: number;
+  user_id?: number;
+  date?: string;
 }
 
 
